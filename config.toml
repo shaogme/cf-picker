@@ -1,0 +1,68 @@
+# CloudflareSpeedTest 默认配置文件
+# 字段与命令行长参数 (Long Arguments) 一致
+
+# 延迟测速线程数 (默认 200，最多 1000)
+routines = 200
+
+# 延迟测速次数；单个 IP 延迟测速的次数 (默认 4 次)
+ping_times = 4
+
+# 下载测速数量；延迟测速并排序后，从最低延迟起下载测速的数量 (默认 10 个)
+test_count = 10
+
+# 下载测速时间；单个 IP 下载测速最长时间 (默认 10 秒)
+download_time = 10
+
+# 指定测速端口；延迟测速/下载测速时使用的端口 (默认 443 端口)
+tcp_port = 443
+
+# 指定测速地址 (默认 https://speed.cloudflare.com/__down?bytes=500000000)
+url = "https://speed.cloudflare.com/__down?bytes=500000000"
+
+# 切换测速模式；延迟测速模式改为 HTTP 协议 (false 为 TCPing，true 为 HTTPing)
+httping = false
+
+# 有效状态代码；HTTPing 延迟测速时网页返回的有效 HTTP 状态码 (默认 0 表示使用默认有效状态码 200/301/302)
+httping_status_code = 0
+
+# TCP 延迟测速超时时间 (单位 ms，默认 1000 ms)
+tcping_timeout = 1000
+
+# HTTP 延迟测速超时时间 (单位 ms，默认 2000 ms)
+httping_timeout = 2000
+
+# 匹配指定地区；IATA 机场地区码或国家/城市码，英文逗号分隔 (默认空字符串表示所有地区)
+cf_colo = ""
+
+# 平均延迟上限；只输出低于指定平均延迟的 IP (单位 ms，默认 9999 ms)
+max_delay = 9999
+
+# 平均延迟下限；只输出高于指定平均延迟的 IP (单位 ms，默认 0 ms)
+min_delay = 0
+
+# 丢包几率上限；只输出低于/等于指定丢包率的 IP (默认 1.00)
+max_loss_rate = 1.0
+
+# 下载速度下限；只输出高于指定下载速度的 IP (单位 MB/s，默认 0.0 MB/s)
+min_speed = 0.0
+
+# 显示结果数量；测速后直接显示指定数量的结果 (默认 10 个)
+print_num = 10
+
+# IP段数据文件 (默认 ip.txt)
+ip_file = "ip.txt"
+
+# 指定 IP 段数据；英文逗号分隔 (默认空字符串)
+ip_text = ""
+
+# 写入结果文件 (默认 result.csv)
+output = "result.csv"
+
+# 禁用下载测速 (false 为启用下载测速，true 为禁用)
+disable_download = false
+
+# 测速全部的 IP；仅支持 IPv4 (false 为每个 /24 段随机测速一个 IP，true 为测速全部)
+test_all = false
+
+# 调试输出模式 (false 为关闭，true 为开启)
+debug = false

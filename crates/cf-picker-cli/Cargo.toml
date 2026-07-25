@@ -1,0 +1,24 @@
+[package]
+name = "cf-picker-cli"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description = "CLI executable for cf-picker"
+
+[dependencies]
+cf-picker-core.workspace = true
+cf-picker-tokio.workspace = true
+tokio.workspace = true
+clap.workspace = true
+indicatif.workspace = true
+colored.workspace = true
+rand.workspace = true
+csv.workspace = true
+figment.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+comfy-table.workspace = true
+ratatui.workspace = true
+crossterm.workspace = true
+

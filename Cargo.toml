@@ -1,0 +1,38 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/cf-picker-core",
+    "crates/cf-picker-tokio",
+    "crates/cf-picker-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["shaogme"]
+
+[workspace.dependencies]
+cf-picker-core = { path = "crates/cf-picker-core" }
+cf-picker-tokio = { path = "crates/cf-picker-tokio" }
+
+ipnetwork = { version = "0.21", default-features = false }
+regex = { version = "1.13", default-features = false }
+hashbrown = { version = "0.17", default-features = false }
+
+serde = { version = "1.0", default-features = false, features = ["derive"] }
+tracing = { version = "0.1", default-features = false }
+futures-util = { version = "0.3", default-features = false }
+
+rand = { version = "0.10", features = ["thread_rng", "std"] }
+tokio = { version = "1.53", features = ["full"] }
+reqwest = { version = "0.13", features = ["json"] }
+csv = "1.4"
+clap = { version = "4.6", features = ["derive"] }
+indicatif = "0.18"
+colored = "3.1"
+figment = { version = "0.10", features = ["toml", "env"] }
+serde_json = "1.0"
+toml = "1.1"
+comfy-table = "7.1"
+ratatui = "0.29"
+crossterm = "0.28"

@@ -1,0 +1,13 @@
+[package]
+name = "cf-picker-tokio"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description = "Native Tokio + Reqwest network adapter for cf-picker-core"
+
+[dependencies]
+cf-picker-core.workspace = true
+tokio.workspace = true
+reqwest.workspace = true
+tracing.workspace = true
+rand.workspace = true

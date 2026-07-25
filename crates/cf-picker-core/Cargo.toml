@@ -1,0 +1,14 @@
+[package]
+name = "cf-picker-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description = "Core pure-logic library for cf-picker"
+
+[dependencies]
+hashbrown = { workspace = true }
+ipnetwork = { workspace = true }
+regex = { workspace = true }
+serde = { workspace = true, features = ["alloc"] }
+tracing = { workspace = true }
+futures-util = { workspace = true, features = ["alloc"] }
