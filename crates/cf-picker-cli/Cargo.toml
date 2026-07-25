@@ -23,4 +23,4 @@ ratatui.workspace = true
 crossterm.workspace = true
 
 [target.'cfg(target_env = "musl")'.dependencies]
-tikv-jemallocator = "0.6"
+tikv-jemallocator = "0.7"
