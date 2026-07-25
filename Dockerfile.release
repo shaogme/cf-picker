@@ -1,0 +1,17 @@
+FROM alpine:latest
+
+WORKDIR /app
+
+# 安装运行时所需的基础证书及 OpenSSL 依赖
+RUN apk add --no-cache \
+    ca-certificates \
+    openssl
+
+# 复制本地构建好的二进制文件及相关配置、IP 列表文件
+COPY cf-picker /app/cf-picker
+COPY config.toml /app/config.toml
+COPY ip.txt /app/ip.txt
+COPY ipv6.txt /app/ipv6.txt
+
+# 设置默认入口点
+ENTRYPOINT ["/app/cf-picker"]

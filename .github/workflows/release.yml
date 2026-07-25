@@ -189,8 +189,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  docker-release:
-    name: Build & Push Docker Image
+  docker-build-amd64:
+    name: Build & Push Docker Image (amd64)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -206,8 +206,108 @@ jobs:
           fi
           echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-musl
+
+      - name: Install cargo-zigbuild & zig
+        run: |
+          pip install ziglang
+          cargo install cargo-zigbuild --locked
+
+      - name: Build binary (x86_64-unknown-linux-musl)
+        run: |
+          cargo zigbuild --release --target x86_64-unknown-linux-musl -p cf-picker-cli
+          cp target/x86_64-unknown-linux-musl/release/cf-picker-cli ./cf-picker
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image (amd64)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile.release
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ steps.tag_version.outputs.tag }}-amd64
+
+  docker-build-arm64:
+    name: Build & Push Docker Image (arm64)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+
+      - name: Determine tag version
+        id: tag_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG_NAME="${{ inputs.version }}"
+          else
+            TAG_NAME="${{ github.ref_name }}"
+          fi
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-unknown-linux-musl
+
+      - name: Install cargo-zigbuild & zig
+        run: |
+          pip install ziglang
+          cargo install cargo-zigbuild --locked
+
+      - name: Build binary (aarch64-unknown-linux-musl)
+        run: |
+          cargo zigbuild --release --target aarch64-unknown-linux-musl -p cf-picker-cli
+          cp target/aarch64-unknown-linux-musl/release/cf-picker-cli ./cf-picker
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image (arm64)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile.release
+          platforms: linux/arm64
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ steps.tag_version.outputs.tag }}-arm64
+
+  docker-merge:
+    name: Create & Push Multi-Arch Manifest
+    needs: [docker-build-amd64, docker-build-arm64]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+
+      - name: Determine tag version
+        id: tag_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG_NAME="${{ inputs.version }}"
+          else
+            TAG_NAME="${{ github.ref_name }}"
+          fi
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -231,13 +331,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.tag_version.outputs.tag }}
-            ghcr.io/${{ github.repository }}:latest
+      - name: Create and push multi-arch manifest
+        run: |
+          IMAGE_NAME="ghcr.io/${{ github.repository }}"
+          TAG="${{ steps.tag_version.outputs.tag }}"
+          
+          docker buildx imagetools create -t ${IMAGE_NAME}:${TAG} -t ${IMAGE_NAME}:latest \
+            ${IMAGE_NAME}:${TAG}-amd64 \
+            ${IMAGE_NAME}:${TAG}-arm64
+
