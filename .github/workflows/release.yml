@@ -75,7 +75,7 @@ jobs:
         run: |
           mkdir dist
           cp target/${{ matrix.target }}/release/cf-picker-cli dist/${{ matrix.exe }}
-          cp README.md LICENSE dist/ 2>/dev/null || true
+          cp README.md LICENSE ip.txt ipv6.txt dist/ 2>/dev/null || true
           cd dist
           tar -czvf ../${{ matrix.archive_name }}.tar.gz *
 
@@ -84,15 +84,23 @@ jobs:
         run: |
           mkdir dist
           cp target/${{ matrix.target }}/release/cf-picker-cli.exe dist/${{ matrix.exe }}
-          cp README.md LICENSE dist/ 2>/dev/null || true
+          cp README.md LICENSE ip.txt ipv6.txt dist/ 2>/dev/null || true
           cd dist
-          tar -czvf ../${{ matrix.archive_name }}.tar.gz *
+          zip -r ../${{ matrix.archive_name }}.zip *
 
-      - name: Upload artifact
+      - name: Upload artifact (Unix)
+        if: matrix.exe == 'cf-picker'
         uses: actions/upload-artifact@main
         with:
           name: ${{ matrix.archive_name }}
           path: ${{ matrix.archive_name }}.tar.gz
+
+      - name: Upload artifact (Windows)
+        if: matrix.exe == 'cf-picker.exe'
+        uses: actions/upload-artifact@main
+        with:
+          name: ${{ matrix.archive_name }}
+          path: ${{ matrix.archive_name }}.zip
 
   create-release:
     name: Create GitHub Release
@@ -117,16 +125,39 @@ jobs:
         with:
           path: ./artifacts
 
-      - name: Prepare release files
+      - name: Prepare release files and notes
         run: |
           mkdir -p ./release_files
-          find ./artifacts -type f -name "*.tar.gz" -exec cp {} ./release_files/ \;
+          find ./artifacts -type f \( -name "*.tar.gz" -o -name "*.zip" \) -exec cp {} ./release_files/ \;
+          
+          TAG_NAME="${{ steps.tag_version.outputs.tag }}"
+          DOWNLOAD_BASE_URL="https://github.com/${{ github.repository }}/releases/download/${TAG_NAME}"
+          
+          cat <<EOF > ./release_notes.md
+          ## 下载资源 (Downloads)
+
+          ### Windows
+          - [x86_64 (64位)](${DOWNLOAD_BASE_URL}/cf-picker-x86_64-pc-windows-gnu.zip) (`cf-picker-x86_64-pc-windows-gnu.zip`)
+          - [aarch64 (ARM64)](${DOWNLOAD_BASE_URL}/cf-picker-aarch64-pc-windows-gnullvm.zip) (`cf-picker-aarch64-pc-windows-gnullvm.zip`)
+
+          ### Linux
+          - [x86_64 (64位)](${DOWNLOAD_BASE_URL}/cf-picker-x86_64-unknown-linux-gnu.tar.gz) (`cf-picker-x86_64-unknown-linux-gnu.tar.gz`)
+          - [aarch64 (ARM64)](${DOWNLOAD_BASE_URL}/cf-picker-aarch64-unknown-linux-gnu.tar.gz) (`cf-picker-aarch64-unknown-linux-gnu.tar.gz`)
+
+          ### macOS
+          - [x86_64 (Intel)](${DOWNLOAD_BASE_URL}/cf-picker-x86_64-apple-darwin.tar.gz) (`cf-picker-x86_64-apple-darwin.tar.gz`)
+          - [aarch64 (Apple Silicon)](${DOWNLOAD_BASE_URL}/cf-picker-aarch64-apple-darwin.tar.gz) (`cf-picker-aarch64-apple-darwin.tar.gz`)
+
+          ---
+          > 所有发布包内均包含：可执行文件、`README.md`、`LICENSE` 以及 IP 库文件 `ip.txt` / `ipv6.txt`。
+          EOF
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag_version.outputs.tag }}
           name: Release ${{ steps.tag_version.outputs.tag }}
+          body_path: ./release_notes.md
           draft: false
           prerelease: false
           files: ./release_files/*

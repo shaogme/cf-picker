@@ -70,9 +70,9 @@ CF-Picker 采用 Rust 语言重新设计与实现，旨在提供高性能、低�
 
 ### 方法一：下载预编译产物
 
-前往 [Releases 页面](https://github.com/shaogme/cf-picker/releases) 下载适用于您系统和架构的预编译二进制文件：
+前往 [Releases 页面](https://github.com/shaogme/cf-picker/releases) 下载适用于您系统和架构的预编译文件（发布包内均已包含二进制文件、`README.md`、`LICENSE` 以及内置 IP 库 `ip.txt` / `ipv6.txt`）：
 
-- **Windows**: `cf-picker-x86_64-pc-windows-gnu.tar.gz` (x64) / `cf-picker-aarch64-pc-windows-gnullvm.tar.gz` (ARM64)
+- **Windows**: `cf-picker-x86_64-pc-windows-gnu.zip` (x64) / `cf-picker-aarch64-pc-windows-gnullvm.zip` (ARM64)
 - **Linux**: `cf-picker-x86_64-unknown-linux-gnu.tar.gz` (x64) / `cf-picker-aarch64-unknown-linux-gnu.tar.gz` (ARM64)
 - **macOS**: `cf-picker-x86_64-apple-darwin.tar.gz` (Intel) / `cf-picker-aarch64-apple-darwin.tar.gz` (Apple Silicon)
 
