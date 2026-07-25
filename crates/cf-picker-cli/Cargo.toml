@@ -22,3 +22,5 @@ comfy-table.workspace = true
 ratatui.workspace = true
 crossterm.workspace = true
 
+[target.'cfg(target_env = "musl")'.dependencies]
+tikv-jemallocator = "0.6"

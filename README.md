@@ -37,32 +37,32 @@ CF-Picker 采用 Rust 语言重新设计与实现，旨在提供高性能、低�
 
 可以通过 `cf-picker-cli --help` 查看完整命令行帮助信息：
 
-| 参数 | 长参数 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `-c` | `--config` | `config.toml` | 指定配置文件路径 |
-| `-n` | `--routines` | `200` | 延迟测速并发线程数（推荐上限 1000） |
-| `-t` | `--ping-times` | `4` | 单个 IP 延迟测速的测试次数 |
-| | `--dn` | `10` | 延迟测速排序后，参与下载测速的 IP 数量 |
-| | `--dt` | `10` | 单个 IP 下载测速的最长持续时间（单位：秒） |
-| | `--tp` | `443` | 测速使用的目标 TCP 端口 |
-| | `--url` | `https://speed.cloudflare.com/__down?bytes=500000000` | 下载测速使用的测试 URL |
-| | `--httping` | `false` | 切换为 HTTPing 延迟测速模式 |
-| | `--httping-code` | `0` | HTTPing 测速有效状态码（默认 0 表示允许 200, 301, 302） |
-| | `--tcping-timeout` | `1000` | TCP 延迟测速超时时间（单位：ms） |
-| | `--httping-timeout` | `2000` | HTTP 延迟测速超时时间（单位：ms） |
-| | `--cfcolo` | `""` | 匹配指定地区码（如 `HKG,SJC`，逗号分隔） |
-| | `--tl` | `9999` | 平均延迟上限，仅保留低于该延迟的 IP（单位：ms） |
-| | `--tll` | `0` | 平均延迟下限，仅保留高于该延迟的 IP（单位：ms） |
-| | `--tlr` | `1.0` | 丢包率上限，仅保留低于或等于该丢包率的 IP |
-| | `--sl` | `0.0` | 下载速度下限，仅保留高于该速度的 IP（单位：MB/s） |
-| `-p` | `--print-num` | `10` | 控制台最终显示的前 N 个优选结果数量 |
-| `-f` | `--ip-file` | `ip.txt` | IP 段数据文件路径 |
-| | `--ip` | `""` | 直接在命令行指定 IP 或 IP 段（逗号分隔） |
-| `-o` | `--output` | `result.csv` | 导出测速结果的 CSV 文件路径 |
-| | `--dd` | `false` | 禁用下载测速，仅进行延迟测试 |
-| | `--allip` | `false` | 测速 IP 段内的全部 IP（仅限 IPv4；默认每个 /24 段随机抽样一个 IP） |
-| | `--debug` | `false` | 开启调试输出模式 |
-| `-v` | `--version` | `false` | 打印程序版本信息 |
+| 参数 | 默认值 | 说明 |
+| --- | --- | --- |
+| `-c, --config` | `config.toml` | 指定配置文件路径 |
+| `-n, --routines` | `200` | 延迟测速并发线程数（推荐上限 1000） |
+| `-t, --ping-times` | `4` | 单个 IP 延迟测速的测试次数 |
+| `--dn` | `10` | 延迟测速排序后，参与下载测速的 IP 数量 |
+| `--dt` | `10` | 单个 IP 下载测速的最长持续时间（单位：秒） |
+| `--tp` | `443` | 测速使用的目标 TCP 端口 |
+| `--url` | `https://speed.cloudflare.com/__down?bytes=500000000` | 下载测速使用的测试 URL |
+| `--httping` | `false` | 切换为 HTTPing 延迟测速模式 |
+| `--httping-code` | `0` | HTTPing 测速有效状态码（默认 0 表示允许 200, 301, 302） |
+| `--tcping-timeout` | `1000` | TCP 延迟测速超时时间（单位：ms） |
+| `--httping-timeout` | `2000` | HTTP 延迟测速超时时间（单位：ms） |
+| `--cfcolo` | `""` | 匹配指定地区码（如 `HKG,SJC`，逗号分隔） |
+| `--tl` | `9999` | 平均延迟上限，仅保留低于该延迟的 IP（单位：ms） |
+| `--tll` | `0` | 平均延迟下限，仅保留高于该延迟的 IP（单位：ms） |
+| `--tlr` | `1.0` | 丢包率上限，仅保留低于或等于该丢包率的 IP |
+| `--sl` | `0.0` | 下载速度下限，仅保留高于该速度的 IP（单位：MB/s） |
+| `-p, --print-num` | `10` | 控制台最终显示的前 N 个优选结果数量 |
+| `-f, --ip-file` | `ip.txt` | IP 段数据文件路径 |
+| `--ip` | `""` | 直接在命令行指定 IP 或 IP 段（逗号分隔） |
+| `-o, --output` | `result.csv` | 导出测速结果的 CSV 文件路径 |
+| `--dd` | `false` | 禁用下载测速，仅进行延迟测试 |
+| `--allip` | `false` | 测速 IP 段内的全部 IP（仅限 IPv4；默认每个 /24 段随机抽样一个 IP） |
+| `--debug` | `false` | 开启调试输出模式 |
+| `-v, --version` | `false` | 打印程序版本信息 |
 
 ---
 
@@ -72,9 +72,16 @@ CF-Picker 采用 Rust 语言重新设计与实现，旨在提供高性能、低�
 
 前往 [Releases 页面](https://github.com/shaogme/cf-picker/releases) 下载适用于您系统和架构的预编译文件（发布包内均已包含二进制文件、`README.md`、`LICENSE` 以及内置 IP 库 `ip.txt` / `ipv6.txt`）：
 
-- **Windows**: `cf-picker-x86_64-pc-windows-gnu.zip` (x64) / `cf-picker-aarch64-pc-windows-gnullvm.zip` (ARM64)
-- **Linux**: `cf-picker-x86_64-unknown-linux-gnu.tar.gz` (x64) / `cf-picker-aarch64-unknown-linux-gnu.tar.gz` (ARM64)
-- **macOS**: `cf-picker-x86_64-apple-darwin.tar.gz` (Intel) / `cf-picker-aarch64-apple-darwin.tar.gz` (Apple Silicon)
+| 操作系统 | 架构 / C 运行时 | 发布包文件名 | 说明 |
+| --- | --- | --- | --- |
+| **Linux** | **x86_64 (musl)** | `cf-picker-x86_64-unknown-linux-musl.tar.gz` | **推荐**，静态链接 + Jemalloc 高性能内存分配器 |
+| **Linux** | **aarch64 (musl)** | `cf-picker-aarch64-unknown-linux-musl.tar.gz` | **推荐**，ARM64 静态链接 + Jemalloc |
+| **Linux** | x86_64 (glibc) | `cf-picker-x86_64-unknown-linux-gnu.tar.gz` | 兼容传统 glibc 环境 |
+| **Linux** | aarch64 (glibc) | `cf-picker-aarch64-unknown-linux-gnu.tar.gz` | 兼容 ARM64 glibc 环境 |
+| **Windows** | x86_64 (64位) | `cf-picker-x86_64-pc-windows-gnu.zip` | Windows x64 |
+| **Windows** | aarch64 (ARM64) | `cf-picker-aarch64-pc-windows-gnullvm.zip` | Windows ARM64 |
+| **macOS** | x86_64 (Intel) | `cf-picker-x86_64-apple-darwin.tar.gz` | Intel 架构 |
+| **macOS** | aarch64 (Apple Silicon) | `cf-picker-aarch64-apple-darwin.tar.gz` | M 系列芯片 |
 
 解压后即可直接运行可执行文件。
 
@@ -92,6 +99,24 @@ cargo build --release -p cf-picker-cli
 ```
 
 编译生成的二进制文件位于 `target/release/cf-picker-cli`（Windows 下为 `cf-picker-cli.exe`）。
+
+### 方法三：使用 Docker 运行
+
+支持通过 Docker 容器化构建与运行：
+
+```bash
+# 本地构建镜像
+docker build -t cf-picker .
+
+# 运行测速
+docker run --rm -it cf-picker
+```
+
+另外，发布 release 时会自动推送 Docker 镜像至 GitHub Container Registry (GHCR)：
+
+```bash
+docker run --rm -it ghcr.io/shaogme/cf-picker:latest
+```
 
 ---
 

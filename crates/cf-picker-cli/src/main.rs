@@ -8,6 +8,10 @@ use std::{
     time::Duration,
 };
 
+#[cfg(target_env = "musl")]
+#[global_allocator]
+static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
+
 use colored::Colorize;
 use comfy_table::{
     Attribute, Cell, CellAlignment, Color, ContentArrangement, Table, presets::UTF8_FULL,
