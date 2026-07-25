@@ -139,7 +139,7 @@ jobs:
           mkdir -p ./release_files
           find ./artifacts -type f \( -name "*.tar.gz" -o -name "*.zip" \) -exec cp {} ./release_files/ \;
           
-          export DOWNLOAD_BASE_URL="https://github.com/${{ github.repository }}/releases/download/${steps.tag_version.outputs.tag}"
+          export DOWNLOAD_BASE_URL="https://github.com/${{ github.repository }}/releases/download/${{ steps.tag_version.outputs.tag }}"
           
           cat <<'EOF' > ./release_notes.template.md
           ## 下载资源 (Downloads)
